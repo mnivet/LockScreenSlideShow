@@ -1,12 +1,12 @@
 ﻿# function fetch from https://github.com/Sauler/PowershellUtils
 # found on this blog : https://www.reddit.com/r/PowerShell/comments/5fglby/powershell_to_set_windows_10_lockscreen/
 function Set-LockscreenWallpaper($path) {
-    Add-Type -Path ($PSScriptRoot + "\\PoshWinRT.dll")
-	[Windows.Storage.StorageFile,Windows.Storage,ContentType=WindowsRuntime]
+    Add-Type -Path (Join-Path $PSScriptRoot "PoshWinRT.dll")
+	[Windows.Storage.StorageFile,Windows.Storage,ContentType=WindowsRuntime] | Out-Null
 	$asyncOp = [Windows.Storage.StorageFile]::GetFileFromPathAsync($path)
 	$wrapper = new-object 'PoshWinRT.AsyncOperationWrapper[Windows.Storage.StorageFile]' -Arg $asyncOp
 	$file = $wrapper.AwaitResult()
-	$null = [Windows.System.UserProfile.LockScreen,Windows.System.UserProfile,ContentType=WindowsRuntime]
+	[Windows.System.UserProfile.LockScreen,Windows.System.UserProfile,ContentType=WindowsRuntime] | Out-Null
 	$asyncAction = [Windows.System.UserProfile.LockScreen]::SetImageFileAsync($file)
 	$wrapper = new-object 'PoshWinRT.AsyncActionWrapper' -Arg $asyncAction
 	$wrapper.AwaitResult()
